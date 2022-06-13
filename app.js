@@ -52,6 +52,7 @@ const serialport2 = new SerialPort({
 })
 var total = 0
 
+let horaactual = getFechaCompleta()
 let chain1 = ''
 let subchain1 = ''
 let countchain1 = ''
@@ -81,9 +82,10 @@ serialport1.on('data',function(buff){
 
             cuenta1 = parseInt(countchain1,16)
 
+            horaactual = getFechaCompleta()
             total = cuenta1+cuenta2
-            console.log("Total personas dentro: ",total)
-            insertInto.run(getFechaCompleta(),"Left",cuenta1,total)
+            console.log(`Total de personas en la Biblioteca: ${total} - ${horaactual}`)
+            insertInto.run(horaactual,"Left",cuenta1,total)
             console.log("------------------------------------------------------------------------------")
 
         }
@@ -109,9 +111,10 @@ serialport2.on('data',function(buff){
     
             cuenta2 = parseInt(countchain2,16)
     
+            horaactual = getFechaCompleta()
             total = cuenta1+cuenta2
-            console.log("Total personas dentro: ",total)
-            insertInto.run(getFechaCompleta(),"Right",cuenta2,total)
+            console.log(`Total de personas en la Biblioteca: ${total} - ${horaactual}`)
+            insertInto.run(horaactual,"Right",cuenta2,total)
             console.log("------------------------------------------------------------------------------")
             
         }
