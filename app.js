@@ -1,6 +1,23 @@
 const { SerialPort } = require('serialport')
 const Database = require("better-sqlite3");
 const mqtt = require("mqtt")
+var CronJob = require('cron').CronJob;
+
+/* CRON */
+
+let msg = Buffer.from([0x00,0x55,0x08,0x00,0x00,0x00,0x00,0x7c])
+
+var job = new CronJob(
+	'00 00 07 * * *',
+	function() {
+		console.log('Good morning! Restarting both sensors');
+        total = 0
+        serialport1.write(msg)
+        serialport2.write(msg)
+	});
+
+console.log("Starting CRON job");
+job.start()
 
 /*MQTT*/
 const options = {
@@ -100,9 +117,9 @@ serialport1.on('data',function(buff){
 
     if(chain1.includes('5043')){
 
-        if(subchain1[1].length>=16){
+        subchain1 = chain1.split('5043')
 
-            subchain1 = chain1.split('5043')
+        if(subchain1[1].length>=16){
             
             countchain1 = subchain1[1][8]+subchain1[1][9]+subchain1[1][10]+subchain1[1][11]+subchain1[1][12]+subchain1[1][13]+subchain1[1][14]+subchain1[1][15]
 
@@ -148,7 +165,7 @@ serialport2.on('data',function(buff){
             insertInto.run(horaactual,"Right",cuenta2,total)
             console.log("------------------------------------------------------------------------------")
             param2.Time = horaactual
-            param2.Sensor = "Left"
+            param2.Sensor = "Right"
             param2.SensorCount = cuenta2
             param2.Total = total
             client.publish("CRAIUPCTPersonCount",JSON.stringify(param2))
@@ -159,9 +176,3 @@ serialport2.on('data',function(buff){
     }
         
 });
-
-client.on('message', function (topic, message) {
-    // message is Buffer
-    console.log(message.toString())
-    client.end()
-  })
