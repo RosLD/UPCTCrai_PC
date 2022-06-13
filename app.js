@@ -100,7 +100,7 @@ serialport1.on('data',function(buff){
 
     if(chain1.includes('5043')){
 
-        if(subchain2[1].length>=16){
+        if(subchain1[1].length>=16){
 
             subchain1 = chain1.split('5043')
             
