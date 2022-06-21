@@ -84,7 +84,7 @@ const serialport1 = new SerialPort({
 })
 
 const serialport2 = new SerialPort({
-    path : '/dev/ttyUSB0',
+    path : '/dev/ttyACM1',
     baudRate: 115200,
     parity:'none',
     stopBits:1,
