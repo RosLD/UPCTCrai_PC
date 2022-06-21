@@ -36,7 +36,7 @@ password: 'raspCRAI2022',
 // mqtts Encrypted TCP connection
 // wxs WeChat applet connection
 // alis Alipay applet connection
-const connectUrl = 'ws://localhost:8083/mqtt'
+const connectUrl = 'ws://10.147.18.134:8083/mqtt'
 const client = mqtt.connect(connectUrl, options)
 
 client.on('connect', function () {
