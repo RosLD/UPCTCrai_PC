@@ -37,19 +37,49 @@ exec("cat /etc/hostname",(error,stdout,stderr)=>{
 })
 
 setInterval(function () {
-    exec(
-      "cat /sys/class/thermal/thermal_zone0/temp",
+
+    exec("cat /sys/class/thermal/thermal_zone0/temp",
       function (error, stdout, stderr) {
         if (error !== null) {
           console.log("exec error: " + error);
         } else {
           dataToSend.temp = parseFloat(stdout / 1000);
           console.log("temperatureUpdate", dataToSend);
-          client.publish("keepalive",JSON.stringify(dataToSend))
+          
 
         }
       }
     );
+
+    dataToSend.timestamp = getFechaCompleta()
+
+    exec("ls /dev/ttyUSB*",
+      function (error, stdout, stderr) {
+        if (error !== null) {
+          console.log("Sensor derecho Out");
+          dataToSend.sensorDer = 'KO'
+        } else {
+          dataToSend.sensorDer = 'OK'
+          
+        }
+      }
+    );
+
+    exec("ls /dev/ttyACM*",
+      function (error, stdout, stderr) {
+        if (error !== null) {
+          console.log("Sensor Izquierdo Out");
+          dataToSend.sensorIzq = 'KO'
+        } else {
+          dataToSend.sensorIzq = 'OK'
+          
+        }
+      }
+    );
+
+    
+
+    client.publish("keepalive",JSON.stringify(dataToSend))
 }, 1000*10*60);
 
 
