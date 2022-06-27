@@ -42,11 +42,11 @@ client.on('connect', function () {
 /*SQLITE3 - Local storagement*/
 const db = new Database("PersonCount.db")
 const createTable = 
-    "CREATE TABLE IF NOT EXISTS PersonCounter ('Timestamp','IdSensor','CuentaEntradaSensor','CuentaSalidaSensor','CuentaEntradaTotal','CuentaSalidaTotal')";
+    "CREATE TABLE IF NOT EXISTS PersonCounter ('Timestamp','IdSensor','EventoIO','entradasDer','entradasIzq','entradasTotal','salidasDer','salidasIzq','salidasTotal')";
 db.exec(createTable);
 
 const insertInto = db.prepare(
-    "INSERT INTO PersonCounter (Timestamp,IdSensor,CuentaEntradaSensor,CuentaSalidaSensor,CuentaEntradaTotal,CuentaSalidaTotal) VALUES (?,?,?,?,?,?)"
+    "INSERT INTO PersonCounter (Timestamp,IdSensor,EventoIO,entradasDer,entradasIzq,entradasTotal,salidasDer,salidasIzq,salidasTotal) VALUES (?,?,?,?,?,?,?,?,?)"
 )
 
 
@@ -150,18 +150,21 @@ parser1.on('data', function(buff){
 
             console.log(`D- In:${entradasder} Out:${salidasder}`)
             console.log(`D- T_in:${entradastotal} T_out:${salidastotal}`)
+            console.log("-------------------------------")
 
 
             horaactual = getFechaCompleta()
             //Save in LOCAL
-            insertInto.run(horaactual,"Right",entradasder,salidasder,entradastotal,salidastotal)
+            insertInto.run(horaactual,"Right",param1.eventoIO,entradasder,entradasizq,entradastotal,salidasder,salidasizq,salidastotal)
 
             //Send MQTT
             param1.timestamp = horaactual
             param1.sensor = "Right"
-            param1.entradasSensor = entradasder
-            param1.salidasSensor = salidasder
+            param1.entradasSensorDer = entradasder
+            param1.entradasSensorIzq = entradasizq
             param1.entradasTotal = entradastotal
+            param1.salidasSensorDer = salidasder
+            param1.salidasSensorIzq = salidasizq
             param1.salidasTotal = salidastotal
             param1.estPersonas = entradastotal - salidastotal
             client.publish("CRAIUPCTPersonCount",JSON.stringify(param1))
@@ -192,7 +195,7 @@ parser2.on('data', function(buff){
             aux2 = parseInt(subchain2[16]+subchain2[17]+subchain2[18]+subchain2[19],16)
 
             if(aux2 > entradasizq)
-                param1.eventoIO = true
+                param2.eventoIO = true
             
 
             entradasizq = aux2
@@ -209,18 +212,20 @@ parser2.on('data', function(buff){
 
             console.log(`I- In:${entradasizq} Out:${salidasizq}`)
             console.log(`I- T_in:${entradastotal} T_out:${salidastotal}`)
-            
+            console.log("-------------------------------")
 
             horaactual = getFechaCompleta()
             //Save in LOCAL
-            insertInto.run(horaactual,"Left",entradasizq,salidasizq,entradastotal,salidastotal)
+            insertInto.run(horaactual,"Left",param2.eventoIO,entradasder,entradasizq,entradastotal,salidasder,salidasizq,salidastotal)
 
             //Send MQTT
             param2.timestamp = horaactual
             param2.sensor = "Left"
-            param2.entradasSensor = entradasizq
-            param2.salidasSensor = salidasizq
+            param2.entradasSensorDer = entradasder
+            param2.entradasSensorIzq = entradasizq
             param2.entradasTotal = entradastotal
+            param2.salidasSensorDer = salidasder
+            param2.salidasSensorIzq = salidasizq
             param2.salidasTotal = salidastotal
             param2.estPersonas = entradastotal - salidastotal
             client.publish("CRAIUPCTPersonCount",JSON.stringify(param2))
