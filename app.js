@@ -126,8 +126,8 @@ parser1.on('data', function(buff){
             chain1 = ''
 
             //Chain detected get Exits and entries
-            entradasder = subchain1[16]+subchain1[17]+subchain1[18]+subchain1[19]
-            salidasder = subchain1[20]+subchain1[21]+subchain1[22]+subchain1[23]
+            entradasder = parseInt(subchain1[16]+subchain1[17]+subchain1[18]+subchain1[19],16)
+            salidasder = parseInt(subchain1[20]+subchain1[21]+subchain1[22]+subchain1[23],16)
 
             console.log(`D- In:${entradasder} Out:${salidasder}`)
             console.log(`D- T_in:${entradastotal} T_out:${salidastotal}`)
@@ -171,8 +171,8 @@ parser2.on('data', function(buff){
             chain2 = ''
 
             //Chain detected get Exits and entries
-            entradasizq = subchain2[16]+subchain2[17]+subchain2[18]+subchain2[19]
-            salidasizq = subchain2[20]+subchain2[21]+subchain2[22]+subchain2[23]
+            entradasizq = parseInt(subchain2[16]+subchain2[17]+subchain2[18]+subchain2[19],16)
+            salidasizq = parseInt(subchain2[20]+subchain2[21]+subchain2[22]+subchain2[23],16)
 
             console.log(`D- In:${entradasizq} Out:${salidasizq}`)
             console.log(`D- T_in:${entradastotal} T_out:${salidastotal}`)
