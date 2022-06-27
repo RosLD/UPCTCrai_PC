@@ -155,7 +155,12 @@ parser1.on('data', function(buff){
 
             horaactual = getFechaCompleta()
             //Save in LOCAL
-            insertInto.run(horaactual,"Right",param1.eventoIO,entradasder,entradasizq,entradastotal,salidasder,salidasizq,salidastotal)
+
+            if(param1.eventoIO)
+                aux1 = "Entrada"
+            else
+                aux1 = "Salida"
+            insertInto.run(horaactual,"Right",aux1,entradasder,entradasizq,entradastotal,salidasder,salidasizq,salidastotal)
 
             //Send MQTT
             param1.timestamp = horaactual
@@ -216,7 +221,11 @@ parser2.on('data', function(buff){
 
             horaactual = getFechaCompleta()
             //Save in LOCAL
-            insertInto.run(horaactual,"Left",param2.eventoIO,entradasder,entradasizq,entradastotal,salidasder,salidasizq,salidastotal)
+            if(param2.eventoIO)
+                aux2 = "Entrada"
+            else
+                aux2 = "Salida"
+            insertInto.run(horaactual,"Left",aux2,entradasder,entradasizq,entradastotal,salidasder,salidasizq,salidastotal)
 
             //Send MQTT
             param2.timestamp = horaactual
