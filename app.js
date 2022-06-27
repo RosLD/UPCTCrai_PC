@@ -71,7 +71,7 @@ function pad(n, z){
 
 
 const serialport1 = new SerialPort({ //Derecho
-    path : '/dev/ttyUSB0',
+    path : '/dev/ttyACM0',
     baudRate: 115200,
     parity:'none',
     stopBits:1,
@@ -80,7 +80,7 @@ const serialport1 = new SerialPort({ //Derecho
 })
 
 const serialport2 = new SerialPort({//Izquierdo
-    path : '/dev/ttyACM0',
+    path : '/dev/ttyUSB0',
     baudRate: 115200,
     parity:'none',
     stopBits:1,
@@ -129,11 +129,12 @@ parser1.on('data', function(buff){
             entradasder = parseInt(subchain1[16]+subchain1[17]+subchain1[18]+subchain1[19],16)
             salidasder = parseInt(subchain1[20]+subchain1[21]+subchain1[22]+subchain1[23],16)
 
+            entradastotal = entradasder + entradasizq;
+            salidastotal = salidasder + salidasizq;
+
             console.log(`D- In:${entradasder} Out:${salidasder}`)
             console.log(`D- T_in:${entradastotal} T_out:${salidastotal}`)
 
-            entradastotal = entradasder + entradasizq;
-            salidastotal = salidasder + salidasizq;
 
             horaactual = getFechaCompleta()
             //Save in LOCAL
@@ -174,11 +175,12 @@ parser2.on('data', function(buff){
             entradasizq = parseInt(subchain2[16]+subchain2[17]+subchain2[18]+subchain2[19],16)
             salidasizq = parseInt(subchain2[20]+subchain2[21]+subchain2[22]+subchain2[23],16)
 
-            console.log(`D- In:${entradasizq} Out:${salidasizq}`)
-            console.log(`D- T_in:${entradastotal} T_out:${salidastotal}`)
-            
             entradastotal = entradasder + entradasizq;
             salidastotal = salidasder + salidasizq;
+
+            console.log(`I- In:${entradasizq} Out:${salidasizq}`)
+            console.log(`I- T_in:${entradastotal} T_out:${salidastotal}`)
+            
 
             horaactual = getFechaCompleta()
             //Save in LOCAL
