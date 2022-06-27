@@ -97,11 +97,14 @@ let chain1 = ''
 let subchain1 = ''
 let salidasder = 0
 let entradasder = 0
+let aux1 = 0
 let param1 = {}
 
 let chain2 = ''
+let subchain2 = ''
 let salidasizq = 0
 let entradasizq = 0
+let aux2 = 0
 let param2 = {}
 
 console.log("DEMO CONTADOR PERSONAS BIBLIOTECA ANTIGONES")
@@ -126,8 +129,21 @@ parser1.on('data', function(buff){
             chain1 = ''
 
             //Chain detected get Exits and entries
-            entradasder = parseInt(subchain1[16]+subchain1[17]+subchain1[18]+subchain1[19],16)
-            salidasder = parseInt(subchain1[20]+subchain1[21]+subchain1[22]+subchain1[23],16)
+            aux1 = parseInt(subchain1[16]+subchain1[17]+subchain1[18]+subchain1[19],16)
+
+            if(aux1 > entradasder)
+                param1.eventoIO = true
+            
+
+            entradasder = aux1
+
+            aux1 = parseInt(subchain1[20]+subchain1[21]+subchain1[22]+subchain1[23],16)
+
+            if(aux1 > salidasder)
+                param1.eventoIO = false
+
+            salidasder = aux1
+            
 
             entradastotal = entradasder + entradasizq;
             salidastotal = salidasder + salidasizq;
@@ -147,6 +163,7 @@ parser1.on('data', function(buff){
             param1.salidasSensor = salidasder
             param1.entradasTotal = entradastotal
             param1.salidasTotal = salidastotal
+            param1.estPersonas = entradastotal - salidastotal
             client.publish("CRAIUPCTPersonCount",JSON.stringify(param1))
 
         }
@@ -172,8 +189,20 @@ parser2.on('data', function(buff){
             chain2 = ''
 
             //Chain detected get Exits and entries
-            entradasizq = parseInt(subchain2[16]+subchain2[17]+subchain2[18]+subchain2[19],16)
-            salidasizq = parseInt(subchain2[20]+subchain2[21]+subchain2[22]+subchain2[23],16)
+            aux2 = parseInt(subchain2[16]+subchain2[17]+subchain2[18]+subchain2[19],16)
+
+            if(aux2 > entradasizq)
+                param1.eventoIO = true
+            
+
+            entradasizq = aux2
+
+            aux2 = parseInt(subchain2[20]+subchain2[21]+subchain2[22]+subchain2[23],16)
+
+            if(aux2 > salidasizq)
+                param2.eventoIO = false
+
+            salidasizq = aux2
 
             entradastotal = entradasder + entradasizq;
             salidastotal = salidasder + salidasizq;
@@ -193,6 +222,7 @@ parser2.on('data', function(buff){
             param2.salidasSensor = salidasizq
             param2.entradasTotal = entradastotal
             param2.salidasTotal = salidastotal
+            param2.estPersonas = entradastotal - salidastotal
             client.publish("CRAIUPCTPersonCount",JSON.stringify(param2))
         }
 
