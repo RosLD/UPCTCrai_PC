@@ -9,7 +9,7 @@ const { ByteLengthParser } = require('@serialport/parser-byte-length')
 let msg = Buffer.from([0x00,0x55,0x08,0x00,0x00,0x00,0x00,0x7c])
 
 var job = new CronJob(
-	'00 00 07 * * *',
+	'00 45 06 * * *',
 	function() {
 		console.log('Good morning! Restarting both sensors');
         salidastotal = 0
@@ -68,6 +68,10 @@ function pad(n, z){
   
     return dformat;
 } 
+
+const isodate =() =>{
+    return new Date().toISOString();
+}
 
 
 const serialport1 = new SerialPort({ //Derecho
@@ -172,6 +176,7 @@ parser1.on('data', function(buff){
             param1.salidasSensorIzq = salidasizq
             param1.salidasTotal = salidastotal
             param1.estPersonas = entradastotal - salidastotal
+            param1.date = isodate();
             client.publish("CRAIUPCTPersonCount",JSON.stringify(param1))
 
         }
@@ -237,6 +242,7 @@ parser2.on('data', function(buff){
             param2.salidasSensorIzq = salidasizq
             param2.salidasTotal = salidastotal
             param2.estPersonas = entradastotal - salidastotal
+            param2.date = isodate();
             client.publish("CRAIUPCTPersonCount",JSON.stringify(param2))
         }
 
