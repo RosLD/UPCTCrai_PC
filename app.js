@@ -69,9 +69,6 @@ function pad(n, z){
     return dformat;
 } 
 
-const isodate =() =>{
-    return new Date().toISOString();
-}
 
 
 const serialport1 = new SerialPort({ //Derecho
@@ -176,7 +173,7 @@ parser1.on('data', function(buff){
             param1.salidasSensorIzq = salidasizq
             param1.salidasTotal = salidastotal
             param1.estPersonas = entradastotal - salidastotal
-            param1.date = isodate();
+            
             client.publish("CRAIUPCTPersonCount",JSON.stringify(param1))
 
         }
@@ -242,7 +239,7 @@ parser2.on('data', function(buff){
             param2.salidasSensorIzq = salidasizq
             param2.salidasTotal = salidastotal
             param2.estPersonas = entradastotal - salidastotal
-            param2.date = isodate();
+            
             client.publish("CRAIUPCTPersonCount",JSON.stringify(param2))
         }
 
