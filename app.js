@@ -89,6 +89,15 @@ const serialport2 = new SerialPort({//Izquierdo
     flowControl:false 
 })
 
+const serialport3 = new SerialPort({//Derecho2
+    path : "/dev/ttyACM1",
+    baudRate: 115200,
+    parity: 'none',
+    stopBits:1,
+    dataBits:8,
+    flowControl:false
+})
+
 
 let entradastotal = 0
 let salidastotal = 0
@@ -107,6 +116,11 @@ let salidasizq = 0
 let entradasizq = 0
 let aux2 = 0
 let param2 = {}
+
+let chain3 = ''
+let subchain3 = ''
+let aux3 = 0
+let param3 = {}
 
 console.log("DEMO CONTADOR PERSONAS BIBLIOTECA ANTIGONES")
 
@@ -166,6 +180,75 @@ parser1.on('data', function(buff){
             //Send MQTT
             param1.timestamp = horaactual
             param1.sensor = "Right"
+            param1.entradasSensorDer = entradasder
+            param1.entradasSensorIzq = entradasizq
+            param1.entradasTotal = entradastotal
+            param1.salidasSensorDer = salidasder
+            param1.salidasSensorIzq = salidasizq
+            param1.salidasTotal = salidastotal
+            param1.estPersonas = entradastotal - salidastotal
+            
+            client.publish("CRAIUPCTPersonCount",JSON.stringify(param1))
+
+        }
+
+    }
+})
+
+/* -------------------------SENSOR DERECHO 2 ------------------------------ */
+
+const parser3 = serialport3.pipe(new ByteLengthParser({ length: 1 }))
+
+parser3.on('data', function(buff){
+    chain3 += buff.toString('hex')
+    //console.log(chain1)
+
+    if((chain3.length > 1024) && (!chain3.includes('5043'))){
+        chain3 = ''
+    }
+
+    if(chain3.includes('5043')){
+        if(chain3.split('5043')[1].length >= 26){
+            subchain3 = chain3.split('5043')[1]
+            chain3 = ''
+
+            //Chain detected get Exits and entries
+            aux3 = parseInt(subchain3[16]+subchain3[17]+subchain3[18]+subchain3[19],16)
+
+            if(aux3 > entradasder)
+                param3.eventoIO = true
+            
+
+            entradasder = aux3
+
+            aux3 = parseInt(subchain3[20]+subchain3[21]+subchain3[22]+subchain3[23],16)
+
+            if(aux3 > salidasder)
+                param3.eventoIO = false
+
+            salidasder = aux3
+            
+
+            entradastotal = entradasder + entradasizq;
+            salidastotal = salidasder + salidasizq;
+
+            console.log(`D- In:${entradasder} Out:${salidasder}`)
+            console.log(`D- T_in:${entradastotal} T_out:${salidastotal}`)
+            console.log("-------------------------------")
+
+
+            horaactual = getFechaCompleta()
+            //Save in LOCAL
+
+            if(param1.eventoIO)
+                aux1 = "Entrada"
+            else
+                aux1 = "Salida"
+            insertInto.run(horaactual,"Right2",aux1,entradasder,entradasizq,entradastotal,salidasder,salidasizq,salidastotal)
+
+            //Send MQTT
+            param1.timestamp = horaactual
+            param1.sensor = "Right2"
             param1.entradasSensorDer = entradasder
             param1.entradasSensorIzq = entradasizq
             param1.entradasTotal = entradastotal
