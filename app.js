@@ -233,8 +233,8 @@ parser3.on('data', function(buff){
             entradastotal = entradasder + entradasizq;
             salidastotal = salidasder + salidasizq;
 
-            console.log(`D- In:${entradasder} Out:${salidasder}`)
-            console.log(`D- T_in:${entradastotal} T_out:${salidastotal}`)
+            console.log(`D2- In:${entradasder} Out:${salidasder}`)
+            console.log(`D2- T_in:${entradastotal} T_out:${salidastotal}`)
             console.log("-------------------------------")
 
 
