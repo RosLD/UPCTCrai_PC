@@ -16,6 +16,7 @@ var job = new CronJob(
         entradastotal = 0
         serialport1.write(msg)
         serialport2.write(msg)
+        serialport3.write(msg)
 	});
 
 console.log("Starting CRON job");
